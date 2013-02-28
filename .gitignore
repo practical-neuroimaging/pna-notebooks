@@ -36,3 +36,6 @@ nosetests.xml
 
 # Downloaded data
 highres.nii.gz
+
+# Generated directory
+nobel_prize/
