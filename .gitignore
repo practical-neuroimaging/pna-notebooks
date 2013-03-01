@@ -39,3 +39,10 @@ highres.nii.gz
 
 # Generated directory
 nobel_prize/
+
+# reveal directory for slide deck
+reveal/
+reveal
+
+# slide builds
+*.html
