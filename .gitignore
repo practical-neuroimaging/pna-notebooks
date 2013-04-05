@@ -35,7 +35,8 @@ nosetests.xml
 .pydevproject
 
 # Downloaded data
-highres.nii.gz
+*.nii.gz
+*.zip
 
 # Generated directory
 nobel_prize/
