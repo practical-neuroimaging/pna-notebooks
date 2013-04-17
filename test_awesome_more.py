@@ -50,6 +50,8 @@ def test_beginning_end_vols():
     end_fixed = awesome.replace_vol(DATA, -1)
     assert_array_equal(end_fixed[:, :, :, last_scan],
                        DATA[:, :, :, last_scan-1])
+    # If we're using -2, we want the mean of the 3rd to last and the last.
+    mean_31 = (DATA[:, :, :, -3] + DATA[:, :, :, -1]) / 2.
     end_fixed = awesome.replace_vol(DATA, -2)
     assert_array_equal(end_fixed[:, :, :, last_scan-1],
-                       DATA[:, :, :, last_scan-2])
+                       mean_31)
