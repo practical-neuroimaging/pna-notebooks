@@ -56,10 +56,20 @@ def test_diff_rms():
                                  21.0092392]))
 
 def replace_vol(img_arr, vol_no):
-    """ Replace volume number `vol_no` with mean of vols either side
+    """ Replace volume number `vol_no` with mean of vols on either side,
+    returning a copy of the data (this replacement does not touch the img_arr
+
 
     The arguments we pass in are ``img_arr`` (a 4D array) and ``vol_no``, in
     integer, giving the volume index (starting at 0)
+
+    For example, if the vol_no is 4, the data should be replaced as follows:
+
+        ret_arr[..., 4] = ( img_arr[..., 3] + img_arr[...,5] ) / 2
+
+    And the rest of the entries in ret_array shold be copies of img_arr.
+
+
     """
     # We need to copy the original data, ``img_arr``, otherwise we would
     # overwrite it.  We also need the data to be floating point type.  The
