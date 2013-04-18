@@ -37,16 +37,21 @@ DATA = IMG.get_data()
 def test_beginning_end_vols():
     # Test that we can replace the first and last volumes
     # This will not work with the current version of awesome - go fix!
-    # Check we can fix the first volume in the series
+    # You should consult replace_vol docstring in awesome.py
+    # Check that we can fix the first volume in the series
+    # There is nothing before index 0, so let's ensure that when replacing
+    # index 0 we fill in with the data that is at index 1
     start_fixed = awesome.replace_vol(DATA, 0)
     assert_array_equal(start_fixed[:, :, :, 0], DATA[:, :, :, 1])
-    # Check we can fix the last volume in the series
+    # Check that we can fix the last volume in the series
     n_scans = DATA.shape[-1]
     last_scan = n_scans - 1
     end_fixed = awesome.replace_vol(DATA, last_scan)
+    # Again there is nothing after the last index , so let's ensure that when
+    # replacing the last volume, we fill in with the data that just before it
     assert_array_equal(end_fixed[:, :, :, last_scan],
                        DATA[:, :, :, last_scan-1])
-    # Check we can use -1 or -2 for the last or second to last scan
+    # Check that we can use -1 or -2 for the last or second to last scan
     end_fixed = awesome.replace_vol(DATA, -1)
     assert_array_equal(end_fixed[:, :, :, last_scan],
                        DATA[:, :, :, last_scan-1])

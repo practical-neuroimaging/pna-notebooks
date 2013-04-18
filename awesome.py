@@ -103,7 +103,7 @@ with any of::
     ./awesome.py
 
     ipython (then)
-    [1] run awesome.py
+    In[1]: run awesome.py
 
 See : http://stackoverflow.com/questions/419163/what-does-if-name-main-do
 """
