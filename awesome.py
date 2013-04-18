@@ -20,8 +20,6 @@ import nibabel as nib
 _TEST_STUFF = {}
 
 def set_test_stuff():
-    # We need to declare the global variable
-    global _TEST_STUFF
     fname = 'bold.nii.gz' # From two_example_images.zip
     img = nib.load(fname)
     data = img.get_data()
@@ -49,7 +47,6 @@ def difference_rms(img_arr):
 
 def test_diff_rms():
     # Test the RMS
-    global _TEST_STUFF # Get the variable storing the test variables
     if not 'data' in _TEST_STUFF: # Check if we've set the state
         set_test_stuff()
     data = _TEST_STUFF['data']
@@ -79,7 +76,6 @@ def replace_vol(img_arr, vol_no):
 
 def test_replace_vol():
     # Test routine to replace volumes
-    global _TEST_STUFF # Get the variable storing the test variables
     if not 'data' in _TEST_STUFF: # Check if we've set the state
         set_test_stuff()
     data = _TEST_STUFF['data']
