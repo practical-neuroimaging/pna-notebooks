@@ -20,6 +20,8 @@ import nibabel as nib
 _TEST_STUFF = {}
 
 def set_test_stuff():
+    # We need to declare the global variable
+    global _TEST_STUFF
     fname = 'bold.nii.gz' # From two_example_images.zip
     img = nib.load(fname)
     data = img.get_data()
@@ -47,6 +49,7 @@ def difference_rms(img_arr):
 
 def test_diff_rms():
     # Test the RMS
+    global _TEST_STUFF # Get the variable storing the test variables
     if not 'data' in _TEST_STUFF: # Check if we've set the state
         set_test_stuff()
     data = _TEST_STUFF['data']
@@ -55,36 +58,38 @@ def test_diff_rms():
                        np.array([21.37829399,  21.55786514,  22.90981674,
                                  21.0092392]))
 
-
 def replace_vol(img_arr, vol_no):
-    """ Replace volume number `vol_no` with mean of vols on either side,
-    returning a copy of the data (this replacement does not touch the img_arr
-
+    """ Replace volume number `vol_no` with mean of vols either side
 
     The arguments we pass in are ``img_arr`` (a 4D array) and ``vol_no``, in
     integer, giving the volume index (starting at 0)
-
-    For example, if the vol_no is 4, the data should be replaced as follows:
-
-        ret_arr[..., 4] = ( img_arr[..., 3] + img_arr[...,5] ) / 2
-
-    And the rest of the entries in ret_array shold be copies of img_arr.
     """
+    n_vols = img_arr.shape[-1]
+    if vol_no < 0: # Deal with negative indices
+        n_vols = img_arr.shape[-1]
+        vol_no = n_vols + vol_no
     # We need to copy the original data, ``img_arr``, otherwise we would
     # overwrite it.  We also need the data to be floating point type.  The
     # following command will copy the data, and make it into floating point
     data = np.array(img_arr, dtype=np.float32)
-    # Take the mean of volumes either side
-    left = data[..., vol_no - 1]
-    right = data[..., vol_no + 1]
-    mean_either_side = (left + right) / 2.0
+    # Deal with first and last
+    if vol_no == 0:
+        new_vol = data[..., 1]
+    elif vol_no == n_vols - 1:
+        new_vol = data[..., -2]
+    else:
+        # Take the mean of volumes either side
+        left = data[..., vol_no - 1]
+        right = data[..., vol_no + 1]
+        new_vol = (left + right) / 2.0
     # Replace volume 65 with the mean
-    data[..., vol_no] = mean_either_side
+    data[..., vol_no] = new_vol
     return data
 
 
 def test_replace_vol():
     # Test routine to replace volumes
+    global _TEST_STUFF # Get the variable storing the test variables
     if not 'data' in _TEST_STUFF: # Check if we've set the state
         set_test_stuff()
     data = _TEST_STUFF['data']
@@ -102,7 +107,7 @@ with any of::
     ./awesome.py
 
     ipython (then)
-    In[1]: run awesome.py
+    [1] run awesome.py
 
 See : http://stackoverflow.com/questions/419163/what-does-if-name-main-do
 """
