@@ -55,6 +55,7 @@ def test_diff_rms():
                        np.array([21.37829399,  21.55786514,  22.90981674,
                                  21.0092392]))
 
+
 def replace_vol(img_arr, vol_no):
     """ Replace volume number `vol_no` with mean of vols on either side,
     returning a copy of the data (this replacement does not touch the img_arr
@@ -68,8 +69,6 @@ def replace_vol(img_arr, vol_no):
         ret_arr[..., 4] = ( img_arr[..., 3] + img_arr[...,5] ) / 2
 
     And the rest of the entries in ret_array shold be copies of img_arr.
-
-
     """
     # We need to copy the original data, ``img_arr``, otherwise we would
     # overwrite it.  We also need the data to be floating point type.  The
