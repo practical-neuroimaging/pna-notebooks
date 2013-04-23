@@ -9,13 +9,15 @@ from nose.tools import assert_equal, assert_true
 """
 Algorithm
 
-1. select h observation
-2. compute sig and mu
-3. compute Malhanobis distance
+1. select h observations as inliers
+2. compute mean (mu) and variance (var)
+3. compute Malhanobis distance (Md) for all observations, using mu and var
 4. take the h observ that have smallest Md
-5. Stop criteria: compare with previous sigma and mu
+5. Repeat 2, 3, 4 until
+6. Stop criteria: compare with previous var and mu
 
-Loop - or stop
+Return outlier corrected mu and var
+
 """
 
 def compute_mu_var(y):
@@ -96,19 +98,6 @@ def test_mahal():
         compute_mahal(tmparr1, npmu, npvar ), np.array([ 4.,  1.,  0.])))
 
 
-# Initialize
-n = 100
-sigma = 1.
-np.random.seed(42)
-Y = np.random.normal(0.,sigma,size=(1,n))
-
-pc = .70
-h = int(pc * n)
-
-outliers = np.random.normal(0.,sigma*10,size=(1,n-h))
-Y[:,0:n-h] = outliers
-
-
 def estimate_mu_var(y, n_inliers=0.7, maxiter=10, tol=1e-6):
     """ Estimate corrected `mu` and `var` for `y` given number of inliers
 
@@ -175,36 +164,61 @@ def estimate_mu_var(y, n_inliers=0.7, maxiter=10, tol=1e-6):
     return mu, var
 
 
-mu, var = estimate_mu_var(Y)
+def main():
+    # Do a run through of the outlier detection
+    # Number of samples
+    n_samples = 100
+    # Standard deviation
+    sigma = 1.
+    # Data vectors (no outliers yet)
+    Y = np.random.normal(0., sigma, size=(1, n_samples))
+    # Proportion of inliers (1-<proportion of outliers>
+    inlier_proportion = .70
+    # Number of inliers, outliers
+    n_inliers = int(inlier_proportion * n_samples)
+    n_outliers = n_samples - n_inliers
+    # Make the correct number of outliers
+    outliers = np.random.normal(0., sigma*10, size=(1, n_outliers))
+    Y[:, 0:n_outliers] = outliers
 
-print mu, var
+    # Estimate the outlier corrected mean and variance
+    print('Uncorrected mu and var')
+    print(compute_mu_var(Y))
+    corr_mu, corr_var = estimate_mu_var(Y)
+    print('Corrected mu and var')
+    print(corr_mu, corr_var)
 
-# choose a false positive rate - Bonferroni corrected for number of samples
-alpha = 0.1/n
+    # choose a false positive rate - Bonferroni corrected for number of samples
+    alpha = 0.1 / n_samples
 
-# Standard deviation - for our 1D case
-sig = np.sqrt(var)
-# z - in 1D case
-z = (Y - mu) / sig
+    # Standard deviation - for our 1D case
+    corr_sigma = np.sqrt(corr_var)
+    # z - in 1D case
+    z = (Y - corr_mu) / corr_sigma
 
-# _out = plt.hist(z[0,:])
+    # _out = plt.hist(z[0,:])
 
-# Normal distribution object
-normdist = sst.norm(mu, sig)
-# Probability of z value less than or equal to each observation
-p_values = normdist.cdf(z)
-# Where probability too high therefore z value too large.  We're only looking
-# for z's that are too positive, disregarding zs that are too negative
-some_bad_ones = p_values > (1 - alpha)
+    # Normal distribution object
+    normdist = sst.norm(corr_mu, corr_sigma)
+    # Probability of z value less than or equal to each observation
+    p_values = normdist.cdf(z)
+    # Where probability too high therefore z value too large.  We're only looking
+    # for z's that are too positive, disregarding zs that are too negative
+    some_bad_ones = p_values > (1 - alpha)
 
-# Show what we found
-print "volumes to remove :", some_bad_ones
-print z[some_bad_ones]
-print Y[some_bad_ones]
+    # Show what we found
+    print "volumes to remove :", some_bad_ones
+    print z[some_bad_ones]
+    print Y[some_bad_ones]
+
+
+if __name__ == '__main__':
+    main()
+
 
 # <codecell>
 
-# exercice : 
+# exercise :
 # print histogram of the good ones:
 
 # <codecell>
