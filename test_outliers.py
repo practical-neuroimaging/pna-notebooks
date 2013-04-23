@@ -51,10 +51,34 @@ def test_mahal():
         [ 4.,  1.,  0.])
     # For some random numbers
     rng = np.random.RandomState(42)
-    vector = rng.normal(3, 7, size=(100,))
-    distances = outliers.compute_mahal(vector, 3, 7)
-    z = (vector - 3) / 7.
+    vector = rng.normal(2, 5, size=(100,))
+    # Need to pass in variance rather than sigma
+    distances = outliers.compute_mahal(vector, 2, 5 ** 2)
+    # Check we get back z score squared
+    z = (vector - 2) / 5.
     assert_almost_equal(distances, z ** 2)
+    vector = rng.normal(-2, 8, size=(100,))
+    # Need to pass in variance rather than sigma
+    distances = outliers.compute_mahal(vector, -2, 8 ** 2)
+    # Check we get back z score squared for negative mean
+    z = (vector + 2) / 8.
+    assert_almost_equal(distances, z ** 2)
+    # Check for 2D, diagonal variance case
+    arr2d = np.zeros((3, 100))
+    # Get expected distances for 2D array with different mus, sigmas
+    z2s = np.zeros_like(arr2d)
+    mus = (1, 2, 3)
+    sigmas = (3, 4, 5)
+    for i in range(3):
+        mu = mus[i]
+        sigma = sigmas[i]
+        vector = rng.normal(mu, sigma, size=(100,))
+        z = (vector - mu) / sigma
+        arr2d[i] = vector
+        z2s[i] = z ** 2
+    # Test against mahal routine
+    distances = outliers.compute_mahal(arr2d, mus, np.diag(sigmas) ** 2)
+    assert_almost_equal(distances, z2s.mean(axis=0))
 
 
 def test_estimate_mu_var():
