@@ -43,8 +43,10 @@ def compute_mu_var(y):
     df = N - 1
     # Mean for each row
     mu = y.mean(axis=1)
+    # The mean removed the second axis. Restore it (length 1) so we can subtract
+    subtracting_mu = np.reshape(mu, (P, 1))
     # Remove mean
-    yc = y - mu
+    yc = y - subtracting_mu
     # Variance(s) and covariances
     var = yc.dot(yc.T) / df
     return mu, var
@@ -67,19 +69,30 @@ def compute_mahal(y, mu, var):
     y : (N,) or (P, N) ndarray
         One row per measure, one column per observation. If a vector, treat as a
         (1, N) array
-    mu : (P,) ndarray
-        Mean of each measure across columns
-    var : (P, P) ndarray
-        Variances (diagonal) and covariances of measures
+    mu : (P,) array-like
+        Mean of each measure across columns.  Can be scalar, array or sequence
+        (list, tuple)
+    var : (P, P) array-like
+        Variances (diagonal) and covariances of measures. Can be scalar, array
+        or sequence (list, tuple)
 
     Returns
     -------
     mahals : (N,) ndarray
         Mahalanobis distances of each observation from `mu`, given `var`
     """
+    # Make sure y is a row vector, if it was only a 1D vector
     y = np.atleast_2d(y)
+    # Shapes
+    P, N = y.shape
+    # Make sure mu and var are arrays
+    mu = np.asarray(mu)
+    # Variance should also be 2D (even if shape (1, 1)) - for np.linalg.inv
+    var = np.atleast_2d(var)
+    # The mean should be shape (P,).  It needs to be (P, 1) shape to subtract
+    subtracting_mu = np.reshape(mu, (P, 1))
     # Mean correct
-    yc = y - mu
+    yc = y - subtracting_mu
     # Correct for (co)variances. For single row, this is the same as dividing by
     # the variance
     y_white = np.linalg.inv(var).dot(yc)
