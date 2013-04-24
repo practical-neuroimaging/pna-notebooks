@@ -82,4 +82,16 @@ def test_mahal():
 
 
 def test_estimate_mu_var():
-    pass
+    # Test mean, variance estimation routine
+    # For some random numbers
+    rng = np.random.RandomState(42)
+    vector = rng.normal(2, 5, size=(100,))
+    # If the outliers are a smaller or equal number to the allowed outliers,
+    # we'll recover the mean for the non-outliers
+    vector[0:10] = 100
+    mu, var = outliers.estimate_mu_var(vector, 90)
+    assert_almost_equal(mu, np.mean(vector[10:]))
+    assert_almost_equal(var, np.var(vector[10:], ddof=1))
+    mu, var = outliers.estimate_mu_var(vector, 95)
+    assert_almost_equal(mu, np.mean(vector[5:]))
+    assert_almost_equal(var, np.var(vector[5:], ddof=1))
