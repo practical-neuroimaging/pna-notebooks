@@ -10,7 +10,7 @@ import numpy as np
 
 import nibabel as nib
 
-from ..checkhash import check_store_hash
+from checkhash import check_store_hash
 
 from nose.tools import assert_equal
 
