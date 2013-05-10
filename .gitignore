@@ -49,3 +49,6 @@ reveal
 
 # slide builds
 *.html
+
+# Checkpoints
+.ipynb_checkpoints/
