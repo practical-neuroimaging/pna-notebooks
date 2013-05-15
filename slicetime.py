@@ -64,11 +64,11 @@ def slice_time_image(img, slice_times, TR, kind='cubic'):
     scan_starts = np.arange(n_scans) * TR
     interp_data = np.empty(data.shape)
     desired_times = scan_starts
-    for slice_no in range(data.shape[0]):
+    for slice_no in range(data.shape[-2]):
         these_times = slice_times[slice_no] + scan_starts
-        data_slice = data[slice_no]
+        data_slice = data[:, :, slice_no, :]
         interped = interp_slice(these_times, data_slice, desired_times, kind)
-        interp_data[slice_no] = interped
+        interp_data[:, :, slice_no, :] = interped
     new_img = nib.Nifti1Image(interp_data, img.get_affine(), img.get_header())
     return new_img
 
