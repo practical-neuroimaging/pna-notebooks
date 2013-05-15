@@ -22,7 +22,7 @@ def pad_ends(first, middle, last):
     return padded
 
 
-def interp_slice(old_times, slice_nd, new_times, kind='linear'):
+def interp_slice(old_times, slice_nd, new_times, kind='cubic'):
     """ Interpolate a 3D slice `slice_nd` with times changing from `old_times` to `new_times`
     """
     n_time = slice_nd.shape[-1]
