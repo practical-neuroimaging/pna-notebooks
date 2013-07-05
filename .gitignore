@@ -1,3 +1,11 @@
+# pdflatex built 
+*.aux
+*.log
+*.out
+*.tex
+*.pdf #---- WE MAY WANT TO REMOVE THIS IF WE WANT TO ADD A PDF IN THE REPO
+
+# python compiled and others
 *.py[cod]
 
 # C extensions
