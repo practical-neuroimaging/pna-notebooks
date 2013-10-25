@@ -1,0 +1,31 @@
+- background in python - which level ? 
+
+- one dataset through the whole class
+- using existing tools like nipype -  scripts or  teach the methods ? 
+- takes years to learn imaging in depth - 
+
+- some of methods aspects are standard:
+    * realignment
+    * slice timing
+    * smoothing
+    
+    These could be less in depth - use standard black box after understanding principle - conceptionial knowledge but not necessarily how to manually code this
+
+- some aspects are more crucial and more variable to analysis : 
+    * stat analysis 
+    * aspect of processing where there's no standard / 
+
+- Planning aspect : know exactly what's going to be taught and keep to the planning
+
+- notebooks in class : figuring both how the code works AND the brain imaging concepts - 
+eg : if I know already the concept of slice timing - I can know see how it is implemented 
+
+- background reading : cbu web pages - Jeanette Mumford centering regressor- fmri handbook - GLM paper 
+
+- student background : linear algebra - matrices - some programing (python) - t-F tests - 
+
+- 
+
+
+
+- 
